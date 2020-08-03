@@ -37,7 +37,7 @@ public class UploadStorageService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return fileName;
+        return targetLocation.toString();
     }
 
 }
