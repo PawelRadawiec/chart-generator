@@ -1,6 +1,7 @@
 package com.info.chartgenerator.controller;
 
 import com.info.chartgenerator.model.ChartData;
+import com.info.chartgenerator.model.ChartType;
 import com.info.chartgenerator.service.ChartDataSetService;
 import com.info.chartgenerator.service.UploadStorageService;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,9 +25,12 @@ public class UploadController {
     }
 
     @PostMapping(value = "/upload")
-    public ChartData uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public ChartData uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("type") ChartType type
+    ) throws IOException {
         String fileName = storageService.storeFile(file);
-        return chartDataSetService.generateChartData(fileName);
+        return chartDataSetService.generateChartData(fileName, type);
     }
 
 }
