@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("WeakerAccess")
@@ -18,28 +20,35 @@ public class ChartDataColumnService {
         ChartData chartData = new ChartData();
         List<ChartDataSet> chartDataSets = chartData.getChartDataSet();
         List<String> lineChartLabels = chartData.getLineChartLabels();
-        int index = 1;
-        boolean lineChartLabelsSet = false;
-        for (Row row : sheet) {
-            ChartDataSet chartDataSet = new ChartDataSet();
-            List<Double> data = new ArrayList<>();
-            int columnIndex = 1;
-            for (Cell cell : row) {
-                data.add(cell.getNumericCellValue());
-                chartDataSet.setLabel("Data " + index);
-                if (!lineChartLabelsSet) {
-                    lineChartLabels.add("set " + columnIndex);
-                    columnIndex++;
-                }
-            }
-            lineChartLabelsSet = true;
-            chartDataSet.setData(data);
-            chartDataSets.add(chartDataSet);
-            index++;
-        }
+        sheet.forEach(row -> chartDataSets.add(appendData(row, lineChartLabels)));
         chartData.setChartDataSet(chartDataSets);
-        chartData.setLineChartLabels(lineChartLabels);
+        chartData.setLineChartLabels(lineChartLabels.stream()
+                .distinct()
+                .collect(Collectors.toList())
+        );
+        appendLabels(chartData);
         return chartData;
+    }
+
+    private ChartDataSet appendData(Row row, List<String> lineChartLabels) {
+        ChartDataSet chartDataSet = new ChartDataSet();
+        List<Double> data = new ArrayList<>();
+        int columnIndex = 1;
+        for (Cell cell : row) {
+            data.add(cell.getNumericCellValue());
+            lineChartLabels.add("set " + columnIndex);
+            columnIndex++;
+        }
+        chartDataSet.setData(data);
+        return chartDataSet;
+    }
+
+    private void appendLabels(ChartData chartData) {
+        AtomicInteger index = new AtomicInteger(1);
+        chartData.getChartDataSet().forEach(data -> {
+            data.setLabel("label " + index.get());
+            index.getAndIncrement();
+        });
     }
 
 }
