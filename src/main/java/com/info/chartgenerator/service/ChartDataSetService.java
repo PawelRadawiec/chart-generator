@@ -15,9 +15,11 @@ import java.io.IOException;
 public class ChartDataSetService {
 
     private LineCharDataService lineService;
+    private ChartDataColumnService columnService;
 
-    public ChartDataSetService(LineCharDataService lineService) {
+    public ChartDataSetService(LineCharDataService lineService, ChartDataColumnService columnService) {
         this.lineService = lineService;
+        this.columnService = columnService;
     }
 
     public ChartData generateChartData(String fileLocation, ChartType type) throws IOException {
@@ -27,13 +29,10 @@ public class ChartDataSetService {
             case LINE:
                 return lineService.generateLineChartData(sheet);
             case COLUMN:
-                return generateColumnChartData(sheet);
+                return columnService.generateColumnChartData(sheet);
+            default:
+                return new ChartData();
         }
-        return new ChartData();
-    }
-
-    private ChartData generateColumnChartData(Sheet sheet) {
-        return new ChartData();
     }
 
     private Sheet getSheet(Workbook workbook) {
