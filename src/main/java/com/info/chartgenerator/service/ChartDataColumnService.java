@@ -2,6 +2,7 @@ package com.info.chartgenerator.service;
 
 import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.model.ChartDataSet;
+import com.info.chartgenerator.model.ChartType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,6 +28,7 @@ public class ChartDataColumnService {
                 .collect(Collectors.toList())
         );
         appendLabels(chartData);
+        chartData.setType(ChartType.BAR);
         return chartData;
     }
 

@@ -2,6 +2,7 @@ package com.info.chartgenerator.service;
 
 import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.model.ChartDataSet;
+import com.info.chartgenerator.model.ChartType;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -43,6 +44,7 @@ public class LineCharDataService {
         }
         chartData.setChartDataSet(chartDataSets);
         chartData.setLineChartLabels(generateLineChartLabels(sheet));
+        chartData.setType(ChartType.LINE);
         return chartData;
     }
 

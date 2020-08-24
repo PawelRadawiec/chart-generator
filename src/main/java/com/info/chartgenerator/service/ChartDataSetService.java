@@ -28,7 +28,7 @@ public class ChartDataSetService {
         switch (type) {
             case LINE:
                 return lineService.generateLineChartData(sheet);
-            case COLUMN:
+            case BAR:
                 return columnService.generateColumnChartData(sheet);
             default:
                 return new ChartData();

@@ -12,6 +12,7 @@ public class ChartData {
 
     private List<ChartDataSet> chartDataSet;
     private List<String> lineChartLabels;
+    private ChartType type;
 
     public List<ChartDataSet> getChartDataSet() {
         if (chartDataSet == null) {
@@ -26,4 +27,9 @@ public class ChartData {
         }
         return lineChartLabels;
     }
+
+    public ChartType getType() {
+        return type;
+    }
+
 }
