@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UploadStorageService {
@@ -29,15 +31,18 @@ public class UploadStorageService {
         }
     }
 
-    public String storeFile(MultipartFile file) {
+    public Map<String, String> storeFile(MultipartFile file) {
+        Map<String, String> fileValue = new HashMap<>();
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        fileValue.put("fileName", fileName);
         Path targetLocation = this.fileLocation.resolve(fileName);
         try {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return targetLocation.toString();
+        fileValue.put("filePath", targetLocation.toString());
+        return fileValue;
     }
 
 }

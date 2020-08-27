@@ -29,8 +29,7 @@ public class UploadController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("type") ChartType type
     ) throws IOException {
-        String fileName = storageService.storeFile(file);
-        return chartDataSetService.generateChartData(fileName, type);
+        return chartDataSetService.generateChartData(storageService.storeFile(file), type);
     }
 
 }
