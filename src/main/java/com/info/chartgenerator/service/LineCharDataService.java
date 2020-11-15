@@ -38,8 +38,9 @@ public class LineCharDataService {
             if (!firstRowAsLabels && rowIndex == 0) {
                 chartDataSets.add(rowData);
             }
-            if (rowIndex > 0)
+            if (rowIndex > 0) {
                 chartDataSets.add(rowData);
+            }
             rowIndex++;
         }
         chartData.setChartDataSet(chartDataSets
@@ -54,15 +55,14 @@ public class LineCharDataService {
 
     private void appendLineChartLabels(Cell cell, List<String> lineChartLabels, int rowIndex) {
         boolean stringType = CellType.STRING.equals(cell.getCellType());
-        if (stringType && rowIndex == 0) {
-            lineChartLabels.add(cell.getStringCellValue());
-        } else if (!stringType && rowIndex == 0) {
-            lineChartLabels.add(String.valueOf(cell.getColumnIndex()));
+        if (rowIndex != 0) {
+            return;
         }
+        lineChartLabels.add(stringType ? cell.getStringCellValue() : String.valueOf(cell.getColumnIndex()));
     }
 
     private void appendRowData(Cell cell, ChartDataSet rowData, List<Double> rowDataValue, int rowIndex) {
-        if (CellType.NUMERIC.equals(cell.getCellType())) {
+        if (CellType.NUMERIC.equals(cell.getCellType()) || CellType.FORMULA.equals(cell.getCellType())) {
             rowDataValue.add(cell.getNumericCellValue());
             rowData.setLabel("Series " + rowIndex);
         }
