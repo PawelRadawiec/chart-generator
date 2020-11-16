@@ -36,6 +36,11 @@ public class ChartDataSetService {
         return repository.findAll();
     }
 
+    public List<ChartData> delete(String id) {
+        repository.deleteById(id);
+        return repository.findAll();
+    }
+
     public ChartData generateChartData(Map<String, String> fileData, ChartType type) throws IOException {
         Workbook workbook = workBookService.generateWorkBook(fileData.get("filePath"));
         Sheet sheet = workBookService.getSheet(workbook);
