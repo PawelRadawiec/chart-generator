@@ -4,8 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,16 +14,12 @@ import java.util.List;
 @Getter
 @ToString
 @NoArgsConstructor
-@Entity
+@Document(collection = "chart_data")
 public class ChartData {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Transient
+    private String id;
     private List<ChartDataSet> chartDataSet;
-    @Transient
     private List<String> lineChartLabels;
-    @Transient
     private List<Double> data;
     private ChartType type;
     private String fileName;
