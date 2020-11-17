@@ -24,6 +24,7 @@ public class ChartData {
     private ChartType type;
     private String fileName;
     private String filePath;
+    private ChartDataSeriesOption option;
 
     public List<ChartDataSet> getChartDataSet() {
         if (chartDataSet == null) {

@@ -14,6 +14,7 @@ public class ChartDataSet {
 
     private String label;
     private List<Double> data;
+    private Long order;
 
     public List<Double> getData() {
         if (data == null) {

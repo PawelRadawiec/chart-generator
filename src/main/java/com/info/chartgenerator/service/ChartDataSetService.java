@@ -1,6 +1,7 @@
 package com.info.chartgenerator.service;
 
 import com.info.chartgenerator.model.ChartData;
+import com.info.chartgenerator.model.ChartDataSeriesOption;
 import com.info.chartgenerator.model.ChartType;
 import com.info.chartgenerator.repository.ChartDataRepository;
 import org.apache.poi.ss.usermodel.*;
@@ -41,20 +42,21 @@ public class ChartDataSetService {
         return repository.findAll();
     }
 
-    public ChartData generateChartData(Map<String, String> fileData, ChartType type) throws IOException {
+    public ChartData generateChartData(Map<String, String> fileData, ChartDataSeriesOption option) throws IOException {
         Workbook workbook = workBookService.generateWorkBook(fileData.get("filePath"));
         Sheet sheet = workBookService.getSheet(workbook);
         ChartData chartData;
-        switch (type) {
+        switch (option.getChartType()) {
             case LINE:
                 chartData = lineService.generateLineChartData(sheet);
                 break;
             case BAR:
-                chartData = columnService.generateColumnChartData(sheet);
+                chartData = columnService.generateColumnChartData(sheet, option);
                 break;
             default:
                 chartData = new ChartData();
         }
+        chartData.setOption(option);
         chartData.setFilePath(fileData.get("filePath"));
         chartData.setFileName(fileData.get("fileName"));
         return save(chartData);
