@@ -48,7 +48,7 @@ public class ChartDataSetService {
         ChartData chartData;
         switch (option.getChartType()) {
             case LINE:
-                chartData = lineService.generateLineChartData(sheet);
+                chartData = lineService.generateLineChartData(sheet, option);
                 break;
             case BAR:
                 chartData = columnService.generateColumnChartData(sheet, option);
