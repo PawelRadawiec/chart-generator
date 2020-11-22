@@ -3,7 +3,8 @@ package com.info.chartgenerator.model;
 public enum ChartType {
 
     LINE("LINE"),
-    BAR("BAR");
+    BAR("BAR"),
+    PIE("PIE");
 
     private String value;
 

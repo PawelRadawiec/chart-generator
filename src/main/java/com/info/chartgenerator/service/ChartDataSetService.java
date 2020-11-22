@@ -2,7 +2,6 @@ package com.info.chartgenerator.service;
 
 import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.model.ChartDataSeriesOption;
-import com.info.chartgenerator.model.ChartType;
 import com.info.chartgenerator.repository.ChartDataRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
@@ -16,15 +15,17 @@ public class ChartDataSetService {
 
     private LineCharDataService lineService;
     private ChartDataColumnService columnService;
+    private PieChartDataService pieService;
     private ChartDataRepository repository;
     private WorkBookService workBookService;
 
     public ChartDataSetService(
             LineCharDataService lineService,
             ChartDataColumnService columnService,
-            ChartDataRepository repository, WorkBookService workBookService) {
+            PieChartDataService pieService, ChartDataRepository repository, WorkBookService workBookService) {
         this.lineService = lineService;
         this.columnService = columnService;
+        this.pieService = pieService;
         this.repository = repository;
         this.workBookService = workBookService;
     }
@@ -52,6 +53,9 @@ public class ChartDataSetService {
                 break;
             case BAR:
                 chartData = columnService.generateColumnChartData(sheet, option);
+                break;
+            case PIE:
+                chartData = pieService.generatePieChartData(sheet, option);
                 break;
             default:
                 chartData = new ChartData();
