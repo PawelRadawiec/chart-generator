@@ -18,7 +18,7 @@ public class ChartDataSet {
 
     public List<Double> getData() {
         if (data == null) {
-            return new ArrayList<>();
+            data = new ArrayList<>();
         }
         return data;
     }

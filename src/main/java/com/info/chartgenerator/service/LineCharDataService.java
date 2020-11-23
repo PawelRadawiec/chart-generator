@@ -59,6 +59,7 @@ public class LineCharDataService {
                     data.add(cell.getNumericCellValue());
                 }
             }
+            chartDataSet.setLabel(String.format("Column series %s", columnIndex + 1));
             chartDataSet.setData(data);
             chartDataSets.add(chartDataSet);
         }

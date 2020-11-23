@@ -26,16 +26,23 @@ public class ChartData {
     private String filePath;
     private ChartDataSeriesOption option;
 
+    public List<Double> getData() {
+        if (data == null) {
+            data = new ArrayList<>();
+        }
+        return data;
+    }
+
     public List<ChartDataSet> getChartDataSet() {
         if (chartDataSet == null) {
-            return new ArrayList<>();
+            chartDataSet = new ArrayList<>();
         }
         return chartDataSet;
     }
 
     public List<String> getLineChartLabels() {
         if (lineChartLabels == null) {
-            return new ArrayList<>();
+            lineChartLabels = new ArrayList<>();
         }
         return lineChartLabels;
     }
