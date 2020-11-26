@@ -2,6 +2,8 @@ package com.info.chartgenerator.controller;
 
 import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.service.ChartDataSetService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +22,8 @@ public class ChartDataController {
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<List<ChartData>> search() {
-        return new ResponseEntity<>(chartDataSetService.search(), HttpStatus.OK);
+    public ResponseEntity<Page<ChartData>> search(Pageable pageable) {
+        return new ResponseEntity<>(chartDataSetService.search(pageable), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}/delete")

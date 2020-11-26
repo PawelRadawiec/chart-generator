@@ -4,6 +4,8 @@ import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.model.ChartDataSeriesOption;
 import com.info.chartgenerator.repository.ChartDataRepository;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -34,8 +36,8 @@ public class ChartDataSetService {
         return repository.save(data);
     }
 
-    public List<ChartData> search() {
-        return repository.findAll();
+    public Page<ChartData> search(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     public List<ChartData> delete(String id) {
