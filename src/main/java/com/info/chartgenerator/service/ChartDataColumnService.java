@@ -9,10 +9,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("WeakerAccess")
@@ -20,57 +17,54 @@ public class ChartDataColumnService {
 
     public ChartData generateColumnChartData(Sheet sheet, ChartDataSeriesOption option) {
         ChartData chartData = new ChartData();
-        List<ChartDataSet> chartDataSets = chartData.getChartDataSet();
-        List<String> lineChartLabels = chartData.getLineChartLabels();
         switch (option.getDataSeriesType()) {
             case ROWS:
-                sheet.forEach(row -> chartDataSets.add(appendRowsTypeData(row, lineChartLabels)));
+                appendRowsData(sheet, chartData);
                 break;
             case COLUMNS:
-                appendColumnTypeData(sheet, lineChartLabels, chartDataSets);
+                appendColumnTypeData(sheet, chartData);
         }
-        chartData.setChartDataSet(chartDataSets);
-        chartData.setLineChartLabels(lineChartLabels.stream()
-                .distinct()
-                .collect(Collectors.toList())
-        );
         appendLabels(chartData);
         chartData.setType(ChartType.BAR);
         return chartData;
     }
 
-    private void appendColumnTypeData(Sheet sheet, List<String> lineChartLabels, List<ChartDataSet> chartDataSets) {
-        int columnCount = 0;
-        for (int i = 0; i < sheet.getLastRowNum() + 1; i++) {
-            Row row = sheet.getRow(i);
-            columnCount = row.getLastCellNum();
-            lineChartLabels.add("Set " + i + 1);
-        }
-        for (int i = 0; i < columnCount; i++) {
+    private void appendColumnTypeData(Sheet sheet, ChartData chartData) {
+        Row firstRow = sheet.getRow(sheet.getFirstRowNum());
+        int rowIndex = 1;
+        boolean firstRowIteration = true;
+        for (int i = 0; i < firstRow.getLastCellNum(); i++) {
             ChartDataSet chartDataSet = new ChartDataSet();
-            List<Double> data = new ArrayList<>();
             for (Row row : sheet) {
+                if (firstRowIteration) {
+                    chartData.getLineChartLabels().add(String.format("Set %s", rowIndex));
+                    rowIndex++;
+                }
                 Cell cell = row.getCell(i);
-                data.add(cell.getNumericCellValue());
+                chartDataSet.getData().add(cell.getNumericCellValue());
             }
-            chartDataSet.setOrder((long) i);
-            chartDataSet.setData(data);
-            chartDataSets.add(chartDataSet);
+            firstRowIteration = false;
+            chartData.getChartDataSet().add(chartDataSet);
         }
     }
 
-    private ChartDataSet appendRowsTypeData(Row row, List<String> lineChartLabels) {
-        ChartDataSet chartDataSet = new ChartDataSet();
-        List<Double> data = new ArrayList<>();
-        int columnIndex = 1;
-        for (Cell cell : row) {
-            data.add(cell.getNumericCellValue());
-            lineChartLabels.add("set " + columnIndex);
-            columnIndex++;
+    private void appendRowsData(Sheet sheet, ChartData chartData) {
+        boolean firstCellIteration = true;
+        for (Row row : sheet) {
+            ChartDataSet chartDataSet = new ChartDataSet();
+            int columnIndex = 1;
+            for (Cell cell : row) {
+                if (firstCellIteration) {
+                    chartData.getLineChartLabels().add(String.format("Set %s", columnIndex));
+                }
+                chartDataSet.getData().add(cell.getNumericCellValue());
+                columnIndex++;
+            }
+            chartData.getChartDataSet().add(chartDataSet);
+            firstCellIteration = false;
         }
-        chartDataSet.setData(data);
-        return chartDataSet;
     }
+
 
     private void appendLabels(ChartData chartData) {
         AtomicInteger index = new AtomicInteger(1);

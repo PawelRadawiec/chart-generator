@@ -10,9 +10,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("WeakerAccess")
@@ -20,70 +18,58 @@ public class LineCharDataService {
 
     public ChartData generateLineChartData(Sheet sheet, ChartDataSeriesOption option) {
         ChartData chartData = new ChartData();
-        List<ChartDataSet> chartDataSets = chartData.getChartDataSet();
-        List<String> lineChartLabels = new ArrayList<>();
         switch (option.getDataSeriesType()) {
             case ROWS:
-                appendRowTypeData(sheet, chartDataSets, lineChartLabels);
+                appendRowTypeData(sheet, chartData);
                 break;
             case COLUMNS:
-                appendColumnTypeData(sheet, chartDataSets, lineChartLabels);
+                appendColumnTypeData(sheet, chartData);
         }
-        chartData.setChartDataSet(chartDataSets
-                .stream()
-                .filter(data -> !data.getData().isEmpty())
-                .collect(Collectors.toList())
-        );
-        chartData.setLineChartLabels(lineChartLabels);
         chartData.setType(ChartType.LINE);
         return chartData;
     }
 
-    private void appendColumnTypeData(Sheet sheet, List<ChartDataSet> chartDataSets, List<String> lineChartLabels) {
+    private void appendColumnTypeData(Sheet sheet, ChartData chartData) {
         Row firstRow = sheet.getRow(0);
         if (firstRow == null) {
             return;
         }
         for (int columnIndex = 0; columnIndex < firstRow.getLastCellNum(); columnIndex++) {
             ChartDataSet chartDataSet = new ChartDataSet();
-            List<Double> data = new ArrayList<>();
             int rowIndex = 1;
             for (Row row : sheet) {
                 Cell cell = row.getCell(columnIndex);
                 boolean cellTypeString = CellType.STRING.equals(cell.getCellType());
                 if (!cellTypeString && columnIndex == 0) {
-                    lineChartLabels.add(String.valueOf(rowIndex));
+                    chartData.getLineChartLabels().add(String.valueOf(rowIndex));
                     rowIndex++;
                 }
                 if (!cellTypeString) {
-                    data.add(cell.getNumericCellValue());
+                    chartDataSet.getData().add(cell.getNumericCellValue());
                 }
             }
             chartDataSet.setLabel(String.format("Column series %s", columnIndex + 1));
-            chartDataSet.setData(data);
-            chartDataSets.add(chartDataSet);
+            chartData.getChartDataSet().add(chartDataSet);
         }
     }
 
-    private void appendRowTypeData(Sheet sheet, List<ChartDataSet> chartDataSets, List<String> lineChartLabels) {
+    private void appendRowTypeData(Sheet sheet, ChartData chartData) {
         int rowIndex = 0;
         int cellCounter = 0;
         boolean firstRowAsLabels = false;
         for (Row row : sheet) {
             ChartDataSet rowData = new ChartDataSet();
-            List<Double> rowDataValue = new ArrayList<>();
             for (Cell cell : row) {
                 firstRowAsLabels = (rowIndex == 0 && cellCounter == 0 && CellType.STRING.equals(cell.getCellType()));
-                appendLineChartLabels(cell, lineChartLabels, rowIndex);
-                appendRowData(cell, rowData, rowDataValue, rowIndex);
+                appendLineChartLabels(cell, chartData.getLineChartLabels(), rowIndex);
+                appendRowData(cell, rowData, rowData.getData(), rowIndex);
                 cellCounter++;
             }
-            rowData.setData(rowDataValue);
             if (!firstRowAsLabels && rowIndex == 0) {
-                chartDataSets.add(rowData);
+                chartData.getChartDataSet().add(rowData);
             }
             if (rowIndex > 0) {
-                chartDataSets.add(rowData);
+                chartData.getChartDataSet().add(rowData);
             }
             rowIndex++;
         }
@@ -97,14 +83,10 @@ public class LineCharDataService {
         lineChartLabels.add(stringType ? cell.getStringCellValue() : String.valueOf(cell.getColumnIndex()));
     }
 
-    private void appendColumnData() {
-
-    }
-
     private void appendRowData(Cell cell, ChartDataSet rowData, List<Double> rowDataValue, int rowIndex) {
         if (CellType.NUMERIC.equals(cell.getCellType()) || CellType.FORMULA.equals(cell.getCellType())) {
             rowDataValue.add(cell.getNumericCellValue());
-            rowData.setLabel("Series " + rowIndex);
+            rowData.setLabel(String.format("Series %s", rowIndex));
         }
     }
 
