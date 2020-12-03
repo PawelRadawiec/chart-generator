@@ -1,4 +1,4 @@
-package com.info.chartgenerator.service;
+package com.info.chartgenerator.service.charts;
 
 import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.model.ChartDataSeriesOption;

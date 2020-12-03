@@ -1,10 +1,12 @@
-package com.info.chartgenerator.service;
+package com.info.chartgenerator.service.charts;
 
 import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.model.ChartDataSeriesOption;
 import com.info.chartgenerator.repository.ChartDataRepository;
+import com.info.chartgenerator.service.WorkBookService;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -40,9 +42,8 @@ public class ChartDataSetService {
         return repository.findAll(pageable);
     }
 
-    public List<ChartData> delete(String id) {
+    public void delete(String id) {
         repository.deleteById(id);
-        return repository.findAll();
     }
 
     public ChartData generateChartData(Map<String, String> fileData, ChartDataSeriesOption option) throws IOException {

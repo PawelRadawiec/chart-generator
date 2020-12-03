@@ -1,7 +1,7 @@
 package com.info.chartgenerator.controller;
 
 import com.info.chartgenerator.model.ChartData;
-import com.info.chartgenerator.service.ChartDataSetService;
+import com.info.chartgenerator.service.charts.ChartDataSetService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,8 +27,9 @@ public class ChartDataController {
     }
 
     @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<List<ChartData>> delete(@PathVariable("id") String id) {
-        return new ResponseEntity<>(chartDataSetService.delete(id), HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable("id") String id) {
+        chartDataSetService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

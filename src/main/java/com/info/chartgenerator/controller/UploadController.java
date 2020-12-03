@@ -4,7 +4,7 @@ import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.model.ChartDataSeriesOption;
 import com.info.chartgenerator.model.ChartType;
 import com.info.chartgenerator.model.DataSeriesType;
-import com.info.chartgenerator.service.ChartDataSetService;
+import com.info.chartgenerator.service.charts.ChartDataSetService;
 import com.info.chartgenerator.service.UploadStorageService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;

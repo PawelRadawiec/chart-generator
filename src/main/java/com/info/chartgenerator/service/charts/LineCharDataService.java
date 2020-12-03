@@ -1,4 +1,4 @@
-package com.info.chartgenerator.service;
+package com.info.chartgenerator.service.charts;
 
 import com.info.chartgenerator.model.ChartData;
 import com.info.chartgenerator.model.ChartDataSeriesOption;
@@ -34,17 +34,17 @@ public class LineCharDataService {
         if (firstRow == null) {
             return;
         }
+        int rowIndex = 0;
         for (int columnIndex = 0; columnIndex < firstRow.getLastCellNum(); columnIndex++) {
             ChartDataSet chartDataSet = new ChartDataSet();
-            int rowIndex = 1;
             for (Row row : sheet) {
                 Cell cell = row.getCell(columnIndex);
-                boolean cellTypeString = CellType.STRING.equals(cell.getCellType());
-                if (!cellTypeString && columnIndex == 0) {
+                boolean numericValue = (CellType.NUMERIC.equals(cell.getCellType()) || CellType.FORMULA.equals(cell.getCellType()));
+                if (numericValue && columnIndex == 0) {
                     chartData.getLineChartLabels().add(String.valueOf(rowIndex));
                     rowIndex++;
                 }
-                if (!cellTypeString) {
+                if (numericValue) {
                     chartDataSet.getData().add(cell.getNumericCellValue());
                 }
             }
@@ -62,15 +62,17 @@ public class LineCharDataService {
             for (Cell cell : row) {
                 firstRowAsLabels = (rowIndex == 0 && cellCounter == 0 && CellType.STRING.equals(cell.getCellType()));
                 appendLineChartLabels(cell, chartData.getLineChartLabels(), rowIndex);
-                appendRowData(cell, rowData, rowData.getData(), rowIndex);
+                appendRowData(cell, rowData);
                 cellCounter++;
             }
-            if (!firstRowAsLabels && rowIndex == 0) {
+            boolean dataNotEmpty = (!rowData.getData().isEmpty());
+            if (!firstRowAsLabels && rowIndex == 0 && dataNotEmpty) {
                 chartData.getChartDataSet().add(rowData);
             }
-            if (rowIndex > 0) {
+            if (rowIndex > 0 && dataNotEmpty) {
                 chartData.getChartDataSet().add(rowData);
             }
+            rowData.setLabel(String.format("Series %s", rowIndex));
             rowIndex++;
         }
     }
@@ -83,10 +85,9 @@ public class LineCharDataService {
         lineChartLabels.add(stringType ? cell.getStringCellValue() : String.valueOf(cell.getColumnIndex()));
     }
 
-    private void appendRowData(Cell cell, ChartDataSet rowData, List<Double> rowDataValue, int rowIndex) {
+    private void appendRowData(Cell cell, ChartDataSet rowData) {
         if (CellType.NUMERIC.equals(cell.getCellType()) || CellType.FORMULA.equals(cell.getCellType())) {
-            rowDataValue.add(cell.getNumericCellValue());
-            rowData.setLabel(String.format("Series %s", rowIndex));
+            rowData.getData().add(cell.getNumericCellValue());
         }
     }
 
